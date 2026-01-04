@@ -15,28 +15,29 @@ import { audio } from '../System/Audio';
 const GRAVITY = 50;
 const JUMP_FORCE = 16; // Results in ~2.56 height (v^2 / 2g)
 
-// Static Geometries
-const TORSO_GEO = new THREE.CylinderGeometry(0.25, 0.15, 0.6, 4);
-const JETPACK_GEO = new THREE.BoxGeometry(0.3, 0.4, 0.15);
-const GLOW_STRIP_GEO = new THREE.PlaneGeometry(0.05, 0.2);
-const HEAD_GEO = new THREE.BoxGeometry(0.25, 0.3, 0.3);
-const ARM_GEO = new THREE.BoxGeometry(0.12, 0.6, 0.12);
-const JOINT_SPHERE_GEO = new THREE.SphereGeometry(0.07);
-const HIPS_GEO = new THREE.CylinderGeometry(0.16, 0.16, 0.2);
-const LEG_GEO = new THREE.BoxGeometry(0.15, 0.7, 0.15);
+// Static Geometries - Dog Body Parts
+const BODY_GEO = new THREE.BoxGeometry(0.5, 0.4, 0.8); // Elongated body
+const HEAD_GEO = new THREE.BoxGeometry(0.35, 0.3, 0.4); // Dog head
+const SNOUT_GEO = new THREE.BoxGeometry(0.2, 0.15, 0.25); // Dog snout
+const EAR_GEO = new THREE.BoxGeometry(0.15, 0.25, 0.05); // Dog ears
+const LEG_GEO = new THREE.BoxGeometry(0.12, 0.5, 0.12); // Dog legs
+const TAIL_GEO = new THREE.CylinderGeometry(0.05, 0.08, 0.6, 8); // Dog tail
+const COLLAR_GEO = new THREE.TorusGeometry(0.2, 0.04, 8, 16); // Dog collar
+const JOINT_SPHERE_GEO = new THREE.SphereGeometry(0.06);
 const SHADOW_GEO = new THREE.CircleGeometry(0.5, 32);
 
 export const Player: React.FC = () => {
   const groupRef = useRef<THREE.Group>(null);
   const bodyRef = useRef<THREE.Group>(null);
   const shadowRef = useRef<THREE.Mesh>(null);
-  
-  // Limb Refs for Animation
-  const leftArmRef = useRef<THREE.Group>(null);
-  const rightArmRef = useRef<THREE.Group>(null);
-  const leftLegRef = useRef<THREE.Group>(null);
-  const rightLegRef = useRef<THREE.Group>(null);
+
+  // Limb Refs for Dog Animation
+  const frontLeftLegRef = useRef<THREE.Group>(null);
+  const frontRightLegRef = useRef<THREE.Group>(null);
+  const backLeftLegRef = useRef<THREE.Group>(null);
+  const backRightLegRef = useRef<THREE.Group>(null);
   const headRef = useRef<THREE.Group>(null);
+  const tailRef = useRef<THREE.Group>(null);
 
   const { status, laneCount, takeDamage, hasDoubleJump, activateImmortality, isImmortalityActive } = useStore();
   
@@ -199,27 +200,33 @@ export const Player: React.FC = () => {
     groupRef.current.rotation.z = -xDiff * 0.2; 
     groupRef.current.rotation.x = isJumping.current ? 0.1 : 0.05; 
 
-    // 3. Skeletal Animation
-    const time = state.clock.elapsedTime * 25; 
-    
+    // 3. Dog Skeletal Animation
+    const time = state.clock.elapsedTime * 25;
+
     if (!isJumping.current) {
-        // Running Cycle
-        if (leftArmRef.current) leftArmRef.current.rotation.x = Math.sin(time) * 0.7;
-        if (rightArmRef.current) rightArmRef.current.rotation.x = Math.sin(time + Math.PI) * 0.7;
-        if (leftLegRef.current) leftLegRef.current.rotation.x = Math.sin(time + Math.PI) * 1.0;
-        if (rightLegRef.current) rightLegRef.current.rotation.x = Math.sin(time) * 1.0;
-        
-        if (bodyRef.current) bodyRef.current.position.y = 1.1 + Math.abs(Math.sin(time)) * 0.1;
+        // Running Cycle - Dog gallop
+        if (frontLeftLegRef.current) frontLeftLegRef.current.rotation.x = Math.sin(time) * 0.8;
+        if (frontRightLegRef.current) frontRightLegRef.current.rotation.x = Math.sin(time + Math.PI) * 0.8;
+        if (backLeftLegRef.current) backLeftLegRef.current.rotation.x = Math.sin(time + Math.PI) * 0.8;
+        if (backRightLegRef.current) backRightLegRef.current.rotation.x = Math.sin(time) * 0.8;
+
+        // Tail wagging
+        if (tailRef.current) tailRef.current.rotation.z = Math.sin(time * 1.5) * 0.3;
+
+        if (bodyRef.current) bodyRef.current.position.y = 0.6 + Math.abs(Math.sin(time)) * 0.08;
     } else {
-        // Jumping Pose
+        // Jumping Pose - Dog extends legs
         const jumpPoseSpeed = delta * 10;
-        if (leftArmRef.current) leftArmRef.current.rotation.x = THREE.MathUtils.lerp(leftArmRef.current.rotation.x, -2.5, jumpPoseSpeed);
-        if (rightArmRef.current) rightArmRef.current.rotation.x = THREE.MathUtils.lerp(rightArmRef.current.rotation.x, -2.5, jumpPoseSpeed);
-        if (leftLegRef.current) leftLegRef.current.rotation.x = THREE.MathUtils.lerp(leftLegRef.current.rotation.x, 0.5, jumpPoseSpeed);
-        if (rightLegRef.current) rightLegRef.current.rotation.x = THREE.MathUtils.lerp(rightLegRef.current.rotation.x, -0.5, jumpPoseSpeed);
-        
-        // Only reset Y if not flipping (handled by flip logic mostly, but safe here)
-        if (bodyRef.current && jumpsPerformed.current !== 2) bodyRef.current.position.y = 1.1; 
+        if (frontLeftLegRef.current) frontLeftLegRef.current.rotation.x = THREE.MathUtils.lerp(frontLeftLegRef.current.rotation.x, -0.3, jumpPoseSpeed);
+        if (frontRightLegRef.current) frontRightLegRef.current.rotation.x = THREE.MathUtils.lerp(frontRightLegRef.current.rotation.x, -0.3, jumpPoseSpeed);
+        if (backLeftLegRef.current) backLeftLegRef.current.rotation.x = THREE.MathUtils.lerp(backLeftLegRef.current.rotation.x, 0.3, jumpPoseSpeed);
+        if (backRightLegRef.current) backRightLegRef.current.rotation.x = THREE.MathUtils.lerp(backRightLegRef.current.rotation.x, 0.3, jumpPoseSpeed);
+
+        // Tail straight back when jumping
+        if (tailRef.current) tailRef.current.rotation.z = THREE.MathUtils.lerp(tailRef.current.rotation.z, 0, jumpPoseSpeed);
+
+        // Only reset Y if not flipping
+        if (bodyRef.current && jumpsPerformed.current !== 2) bodyRef.current.position.y = 0.6;
     }
 
     // 4. Dynamic Shadow
@@ -269,51 +276,70 @@ export const Player: React.FC = () => {
 
   return (
     <group ref={groupRef} position={[0, 0, 0]}>
-      <group ref={bodyRef} position={[0, 1.1, 0]}> 
-        
-        {/* Torso */}
-        <mesh castShadow position={[0, 0.2, 0]} geometry={TORSO_GEO} material={armorMaterial} />
+      <group ref={bodyRef} position={[0, 0.6, 0]}>
 
-        {/* Jetpack */}
-        <mesh position={[0, 0.2, -0.2]} geometry={JETPACK_GEO} material={jointMaterial} />
-        <mesh position={[-0.08, 0.1, -0.28]} geometry={GLOW_STRIP_GEO} material={glowMaterial} />
-        <mesh position={[0.08, 0.1, -0.28]} geometry={GLOW_STRIP_GEO} material={glowMaterial} />
+        {/* Dog Body */}
+        <mesh castShadow position={[0, 0, 0]} geometry={BODY_GEO} material={armorMaterial} />
 
-        {/* Head */}
-        <group ref={headRef} position={[0, 0.6, 0]}>
+        {/* Dog Head */}
+        <group ref={headRef} position={[0, 0.15, 0.5]}>
             <mesh castShadow geometry={HEAD_GEO} material={armorMaterial} />
+
+            {/* Snout */}
+            <mesh castShadow position={[0, -0.05, 0.3]} geometry={SNOUT_GEO} material={armorMaterial} />
+
+            {/* Ears */}
+            <mesh castShadow position={[-0.15, 0.2, 0]} geometry={EAR_GEO} material={armorMaterial} rotation={[0, 0, -0.3]} />
+            <mesh castShadow position={[0.15, 0.2, 0]} geometry={EAR_GEO} material={armorMaterial} rotation={[0, 0, 0.3]} />
+
+            {/* Eyes (glowing) */}
+            <mesh position={[-0.1, 0.05, 0.3]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} scale={[0.6, 0.6, 0.6]} />
+            <mesh position={[0.1, 0.05, 0.3]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} scale={[0.6, 0.6, 0.6]} />
         </group>
 
-        {/* Arms */}
-        <group position={[0.32, 0.4, 0]}>
-            <group ref={rightArmRef}>
-                <mesh position={[0, -0.25, 0]} castShadow geometry={ARM_GEO} material={armorMaterial} />
-                <mesh position={[0, -0.55, 0]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} />
-            </group>
-        </group>
-        <group position={[-0.32, 0.4, 0]}>
-            <group ref={leftArmRef}>
-                 <mesh position={[0, -0.25, 0]} castShadow geometry={ARM_GEO} material={armorMaterial} />
-                 <mesh position={[0, -0.55, 0]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} />
+        {/* Collar */}
+        <mesh position={[0, 0.15, 0.35]} rotation={[Math.PI/2, 0, 0]} geometry={COLLAR_GEO} material={glowMaterial} />
+
+        {/* Front Right Leg */}
+        <group position={[0.15, -0.2, 0.25]}>
+            <group ref={frontRightLegRef}>
+                <mesh position={[0, -0.25, 0]} castShadow geometry={LEG_GEO} material={armorMaterial} />
+                <mesh position={[0, -0.5, 0]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} />
             </group>
         </group>
 
-        {/* Hips */}
-        <mesh position={[0, -0.15, 0]} geometry={HIPS_GEO} material={jointMaterial} />
-
-        {/* Legs */}
-        <group position={[0.12, -0.25, 0]}>
-            <group ref={rightLegRef}>
-                 <mesh position={[0, -0.35, 0]} castShadow geometry={LEG_GEO} material={armorMaterial} />
+        {/* Front Left Leg */}
+        <group position={[-0.15, -0.2, 0.25]}>
+            <group ref={frontLeftLegRef}>
+                <mesh position={[0, -0.25, 0]} castShadow geometry={LEG_GEO} material={armorMaterial} />
+                <mesh position={[0, -0.5, 0]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} />
             </group>
         </group>
-        <group position={[-0.12, -0.25, 0]}>
-            <group ref={leftLegRef}>
-                 <mesh position={[0, -0.35, 0]} castShadow geometry={LEG_GEO} material={armorMaterial} />
+
+        {/* Back Right Leg */}
+        <group position={[0.15, -0.2, -0.25]}>
+            <group ref={backRightLegRef}>
+                <mesh position={[0, -0.25, 0]} castShadow geometry={LEG_GEO} material={armorMaterial} />
+                <mesh position={[0, -0.5, 0]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} />
+            </group>
+        </group>
+
+        {/* Back Left Leg */}
+        <group position={[-0.15, -0.2, -0.25]}>
+            <group ref={backLeftLegRef}>
+                <mesh position={[0, -0.25, 0]} castShadow geometry={LEG_GEO} material={armorMaterial} />
+                <mesh position={[0, -0.5, 0]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} />
+            </group>
+        </group>
+
+        {/* Tail */}
+        <group position={[0, 0.1, -0.5]}>
+            <group ref={tailRef}>
+                <mesh position={[0, 0, -0.3]} rotation={[Math.PI/4, 0, 0]} castShadow geometry={TAIL_GEO} material={armorMaterial} />
             </group>
         </group>
       </group>
-      
+
       <mesh ref={shadowRef} position={[0, 0.02, 0]} rotation={[-Math.PI/2, 0, 0]} geometry={SHADOW_GEO} material={shadowMaterial} />
     </group>
   );
