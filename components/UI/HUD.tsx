@@ -7,7 +7,7 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, Zap, Trophy, MapPin, Diamond, Rocket, ArrowUpCircle, Shield, Activity, PlusCircle, Play } from 'lucide-react';
 import { useStore } from '../../store';
-import { GameStatus, GEMINI_COLORS, ShopItem, RUN_SPEED_BASE } from '../../types';
+import { GameStatus, CORGI_COLORS, ShopItem, RUN_SPEED_BASE } from '../../types';
 import { audio } from '../System/Audio';
 
 // Available Shop Items
@@ -106,7 +106,7 @@ const ShopScreen: React.FC = () => {
 
 export const HUD: React.FC = () => {
   const { score, lives, maxLives, collectedLetters, status, level, restartGame, startGame, gemsCollected, distance, isImmortalityActive, speed } = useStore();
-  const target = ['G', 'E', 'M', 'I', 'N', 'I'];
+  const target = ['C', 'O', 'R', 'G', 'I'];
 
   // Common container style
   const containerClass = "absolute inset-0 pointer-events-none flex flex-col justify-between p-4 md:p-8 z-50";
@@ -262,11 +262,11 @@ export const HUD: React.FC = () => {
              </div>
         )}
 
-        {/* Gemini Collection Status - Just below Top Bar */}
+        {/* Corgi Collection Status - Just below Top Bar */}
         <div className="absolute top-16 md:top-24 left-1/2 transform -translate-x-1/2 flex space-x-2 md:space-x-3">
             {target.map((char, idx) => {
                 const isCollected = collectedLetters.includes(idx);
-                const color = GEMINI_COLORS[idx];
+                const color = CORGI_COLORS[idx];
 
                 return (
                     <div 
