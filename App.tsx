@@ -31,21 +31,20 @@ const CameraController = () => {
     const heightFactor = isMobile ? 2.0 : 0.5;
     const distFactor = isMobile ? 4.5 : 1.0;
 
-    // Base (3 lanes): y=5.5, z=8
+    // Base (3 lanes): y=3.5, z=7 - Adjusted to show player higher in frame
     // Calculate target based on how many extra lanes we have relative to the start
     const extraLanes = Math.max(0, laneCount - 3);
 
-    const targetY = 5.5 + (extraLanes * heightFactor);
-    const targetZ = 8.0 + (extraLanes * distFactor);
+    const targetY = 3.5 + (extraLanes * heightFactor);
+    const targetZ = 7.0 + (extraLanes * distFactor);
 
     const targetPos = new THREE.Vector3(0, targetY, targetZ);
     
     // Smoothly interpolate camera position
     camera.position.lerp(targetPos, delta * 2.0);
     
-    // Look further down the track to see the end of lanes
-    // Adjust look target slightly based on height to maintain angle
-    camera.lookAt(0, 0, -30); 
+    // Look at a point closer to the player to keep them in view
+    camera.lookAt(0, 0.5, -20); 
   });
   
   return null;
@@ -76,7 +75,7 @@ function App() {
         dpr={[1, 1.5]} 
         gl={{ antialias: false, stencil: false, depth: true, powerPreference: "high-performance" }}
         // Initial camera, matches the controller base
-        camera={{ position: [0, 5.5, 8], fov: 60 }}
+        camera={{ position: [0, 3.5, 7], fov: 60 }}
       >
         <CameraController />
         <Suspense fallback={null}>
