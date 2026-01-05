@@ -56,16 +56,16 @@ export const Player: React.FC = () => {
   const isInvincible = useRef(false);
   const lastDamageTime = useRef(0);
 
-  // Memoized Materials - Earth Tones
+  // Memoized Materials - Miami Vice Theme
   const { armorMaterial, jointMaterial, glowMaterial, shadowMaterial } = useMemo(() => {
-      const armorColor = isImmortalityActive ? '#d4a574' : '#8b6f47'; // Tan/brown for corgi fur
-      const glowColor = isImmortalityActive ? '#f5deb3' : '#d2b48c'; // Wheat/tan glow
+      const armorColor = isImmortalityActive ? '#ff9e00' : '#ff006e'; // Hot pink corgi with orange immortality
+      const glowColor = isImmortalityActive ? '#ffea00' : '#00d9ff'; // Cyan glow, yellow when immortal
 
       return {
-          armorMaterial: new THREE.MeshStandardMaterial({ color: armorColor, roughness: 0.3, metalness: 0.8 }),
-          jointMaterial: new THREE.MeshStandardMaterial({ color: '#4a3728', roughness: 0.7, metalness: 0.5 }), // Dark brown
+          armorMaterial: new THREE.MeshStandardMaterial({ color: armorColor, roughness: 0.2, metalness: 0.9, emissive: armorColor, emissiveIntensity: 0.3 }),
+          jointMaterial: new THREE.MeshStandardMaterial({ color: '#8b00ff', roughness: 0.3, metalness: 0.8, emissive: '#8b00ff', emissiveIntensity: 0.2 }), // Purple accents
           glowMaterial: new THREE.MeshBasicMaterial({ color: glowColor }),
-          shadowMaterial: new THREE.MeshBasicMaterial({ color: '#000000', opacity: 0.3, transparent: true })
+          shadowMaterial: new THREE.MeshBasicMaterial({ color: '#ff006e', opacity: 0.4, transparent: true })
       };
   }, [isImmortalityActive]);
 
