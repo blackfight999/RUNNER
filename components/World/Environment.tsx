@@ -81,10 +81,10 @@ const StarField: React.FC = () => {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.5}
-        color="#ffffff"
+        size={0.6}
+        color="#00d9ff"
         transparent
-        opacity={0.8}
+        opacity={0.9}
         sizeAttenuation
       />
     </points>
@@ -109,17 +109,17 @@ const LaneGuides: React.FC = () => {
             {/* Lane Floor - Lowered slightly to -0.02 */}
             <mesh position={[0, -0.02, -20]} rotation={[-Math.PI / 2, 0, 0]}>
                 <planeGeometry args={[laneCount * LANE_WIDTH, 200]} />
-                <meshBasicMaterial color="#1a0b2e" transparent opacity={0.9} />
+                <meshBasicMaterial color="#0a0e27" transparent opacity={0.9} />
             </mesh>
 
             {/* Lane Separators - Glowing Lines */}
             {separators.map((x, i) => (
                 <mesh key={`sep-${i}`} position={[x, 0, -20]} rotation={[-Math.PI / 2, 0, 0]}>
-                    <planeGeometry args={[0.05, 200]} /> 
-                    <meshBasicMaterial 
-                        color="#00ffff" 
-                        transparent 
-                        opacity={0.4} 
+                    <planeGeometry args={[0.05, 200]} />
+                    <meshBasicMaterial
+                        color="#ff006e"
+                        transparent
+                        opacity={0.6}
                     />
                 </mesh>
             ))}
@@ -144,8 +144,8 @@ const RetroSun: React.FC = () => {
 
     const uniforms = useMemo(() => ({
         uTime: { value: 0 },
-        uColorTop: { value: new THREE.Color('#ffe600') }, // Bright Yellow
-        uColorBottom: { value: new THREE.Color('#ff0077') } // Magenta/Pink
+        uColorTop: { value: new THREE.Color('#ffea00') }, // Neon Yellow
+        uColorBottom: { value: new THREE.Color('#ff006e') } // Hot Pink
     }), []);
 
     return (
@@ -221,11 +221,11 @@ const MovingGrid: React.FC = () => {
     return (
         <mesh ref={meshRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.2, -100]}>
             <planeGeometry args={[300, 400, 30, 40]} />
-            <meshBasicMaterial 
-                color="#8800ff" 
-                wireframe 
-                transparent 
-                opacity={0.15} 
+            <meshBasicMaterial
+                color="#00d9ff"
+                wireframe
+                transparent
+                opacity={0.2}
             />
         </mesh>
     );
@@ -234,17 +234,17 @@ const MovingGrid: React.FC = () => {
 export const Environment: React.FC = () => {
   return (
     <>
-      <color attach="background" args={['#050011']} />
-      <fog attach="fog" args={['#050011', 40, 160]} />
-      
-      <ambientLight intensity={0.2} color="#400080" />
-      <directionalLight position={[0, 20, -10]} intensity={1.5} color="#00ffff" />
-      <pointLight position={[0, 25, -150]} intensity={2} color="#ff00aa" distance={200} decay={2} />
-      
+      <color attach="background" args={['#1a0b2e']} />
+      <fog attach="fog" args={['#1a0b2e', 40, 160]} />
+
+      <ambientLight intensity={0.3} color="#8b00ff" />
+      <directionalLight position={[0, 20, -10]} intensity={2} color="#00d9ff" />
+      <pointLight position={[0, 25, -150]} intensity={3} color="#ff006e" distance={200} decay={2} />
+
       <StarField />
       <MovingGrid />
       <LaneGuides />
-      
+
       <RetroSun />
     </>
   );

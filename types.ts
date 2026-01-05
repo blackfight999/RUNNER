@@ -40,13 +40,13 @@ export const RUN_SPEED_BASE = 22.5;
 export const SPAWN_DISTANCE = 120;
 export const REMOVE_DISTANCE = 20; // Behind player
 
-// Earth Tone Colors for CORGI
+// Miami Vice Neon Colors for CORGI
 export const CORGI_COLORS = [
-    '#8b6f47', // C - Brown
-    '#d2b48c', // O - Tan
-    '#daa520', // R - Goldenrod
-    '#cd853f', // G - Peru
-    '#f5deb3', // I - Wheat
+    '#ff006e', // C - Hot Pink
+    '#00d9ff', // O - Cyan
+    '#ff6b35', // R - Coral Orange
+    '#8b00ff', // G - Purple
+    '#ffea00', // I - Neon Yellow
 ];
 
 export interface ShopItem {

@@ -64,7 +64,7 @@ const ShopScreen: React.FC = () => {
     return (
         <div className="absolute inset-0 bg-black/90 z-[100] text-white pointer-events-auto backdrop-blur-md overflow-y-auto">
              <div className="flex flex-col items-center justify-center min-h-full py-8 px-4">
-                 <h2 className="text-3xl md:text-4xl font-black text-cyan-400 mb-2 font-cyber tracking-widest text-center">CYBER SHOP</h2>
+                 <h2 className="text-3xl md:text-4xl font-black text-pink-500 mb-2 font-cyber tracking-widest text-center">CYBER SHOP</h2>
                  <div className="flex items-center text-yellow-400 mb-6 md:mb-8">
                      <span className="text-base md:text-lg mr-2">AVAILABLE CREDITS:</span>
                      <span className="text-xl md:text-2xl font-bold">{score.toLocaleString()}</span>
@@ -75,16 +75,16 @@ const ShopScreen: React.FC = () => {
                          const Icon = item.icon;
                          const canAfford = score >= item.cost;
                          return (
-                             <div key={item.id} className="bg-gray-900/80 border border-gray-700 p-4 md:p-6 rounded-xl flex flex-col items-center text-center hover:border-cyan-500 transition-colors">
+                             <div key={item.id} className="bg-gray-900/80 border border-gray-700 p-4 md:p-6 rounded-xl flex flex-col items-center text-center hover:border-pink-500 transition-colors">
                                  <div className="bg-gray-800 p-3 md:p-4 rounded-full mb-3 md:mb-4">
-                                     <Icon className="w-6 h-6 md:w-8 md:h-8 text-cyan-400" />
+                                     <Icon className="w-6 h-6 md:w-8 md:h-8 text-pink-500" />
                                  </div>
                                  <h3 className="text-lg md:text-xl font-bold mb-2">{item.name}</h3>
                                  <p className="text-gray-400 text-xs md:text-sm mb-4 h-10 md:h-12 flex items-center justify-center">{item.description}</p>
                                  <button 
                                     onClick={() => buyItem(item.id as any, item.cost)}
                                     disabled={!canAfford}
-                                    className={`px-4 md:px-6 py-2 rounded font-bold w-full text-sm md:text-base ${canAfford ? 'bg-gradient-to-r from-cyan-600 to-blue-600 hover:brightness-110' : 'bg-gray-700 cursor-not-allowed opacity-50'}`}
+                                    className={`px-4 md:px-6 py-2 rounded font-bold w-full text-sm md:text-base ${canAfford ? 'bg-gradient-to-r from-pink-600 to-purple-600 hover:brightness-110' : 'bg-gray-700 cursor-not-allowed opacity-50'}`}
                                  >
                                      {item.cost} GEMS
                                  </button>
@@ -136,7 +136,7 @@ export const HUD: React.FC = () => {
                      <div className="absolute inset-0 flex flex-col justify-end items-center p-6 pb-8 text-center z-10">
                         <button 
                           onClick={() => { audio.init(); startGame(); }}
-                          className="w-full group relative px-6 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-white font-black text-xl rounded-xl hover:bg-white/20 transition-all shadow-[0_0_20px_rgba(0,255,255,0.2)] hover:shadow-[0_0_30px_rgba(0,255,255,0.4)] hover:border-cyan-400 overflow-hidden"
+                          className="w-full group relative px-6 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-white font-black text-xl rounded-xl hover:bg-white/20 transition-all shadow-[0_0_20px_rgba(255,0,110,0.2)] hover:shadow-[0_0_30px_rgba(255,0,110,0.4)] hover:border-pink-500 overflow-hidden"
                         >
                             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/40 via-purple-500/40 to-pink-500/40 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
                             <span className="relative z-10 tracking-widest flex items-center justify-center">
@@ -181,7 +181,7 @@ export const HUD: React.FC = () => {
 
                 <button 
                   onClick={() => { audio.init(); restartGame(); }}
-                  className="px-8 md:px-10 py-3 md:py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-lg md:text-xl rounded hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,255,255,0.4)]"
+                  className="px-8 md:px-10 py-3 md:py-4 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold text-lg md:text-xl rounded hover:scale-105 transition-all shadow-[0_0_20px_rgba(255,0,110,0.4)]"
                 >
                     RUN AGAIN
                 </button>
@@ -235,7 +235,7 @@ export const HUD: React.FC = () => {
         {/* Top Bar */}
         <div className="flex justify-between items-start w-full">
             <div className="flex flex-col">
-                <div className="text-3xl md:text-5xl font-bold text-cyan-400 drop-shadow-[0_0_10px_#00ffff] font-cyber">
+                <div className="text-3xl md:text-5xl font-bold text-pink-500 drop-shadow-[0_0_10px_#ff006e] font-cyber">
                     {score.toLocaleString()}
                 </div>
             </div>
@@ -288,7 +288,7 @@ export const HUD: React.FC = () => {
 
         {/* Bottom Overlay */}
         <div className="w-full flex justify-end items-end">
-             <div className="flex items-center space-x-2 text-cyan-500 opacity-70">
+             <div className="flex items-center space-x-2 text-pink-400 opacity-70">
                  <Zap className="w-4 h-4 md:w-6 md:h-6 animate-pulse" />
                  <span className="font-mono text-base md:text-xl">SPEED {Math.round((speed / RUN_SPEED_BASE) * 100)}%</span>
              </div>
