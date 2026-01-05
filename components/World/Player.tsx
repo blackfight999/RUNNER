@@ -15,14 +15,14 @@ import { audio } from '../System/Audio';
 const GRAVITY = 50;
 const JUMP_FORCE = 16; // Results in ~2.56 height (v^2 / 2g)
 
-// Static Geometries - Dog Body Parts
-const BODY_GEO = new THREE.BoxGeometry(0.5, 0.4, 0.8); // Elongated body
-const HEAD_GEO = new THREE.BoxGeometry(0.35, 0.3, 0.4); // Dog head
-const SNOUT_GEO = new THREE.BoxGeometry(0.2, 0.15, 0.25); // Dog snout
-const EAR_GEO = new THREE.BoxGeometry(0.15, 0.25, 0.05); // Dog ears
-const LEG_GEO = new THREE.BoxGeometry(0.12, 0.5, 0.12); // Dog legs
-const TAIL_GEO = new THREE.CylinderGeometry(0.05, 0.08, 0.6, 8); // Dog tail
-const COLLAR_GEO = new THREE.TorusGeometry(0.2, 0.04, 8, 16); // Dog collar
+// Static Geometries - Corgi Body Parts
+const BODY_GEO = new THREE.BoxGeometry(0.6, 0.35, 1.0); // Long corgi body
+const HEAD_GEO = new THREE.BoxGeometry(0.4, 0.35, 0.45); // Corgi head
+const SNOUT_GEO = new THREE.BoxGeometry(0.22, 0.18, 0.3); // Corgi snout
+const EAR_GEO = new THREE.BoxGeometry(0.2, 0.35, 0.05); // Big corgi ears
+const LEG_GEO = new THREE.BoxGeometry(0.14, 0.3, 0.14); // Short corgi legs
+const TAIL_GEO = new THREE.CylinderGeometry(0.06, 0.04, 0.25, 8); // Short fluffy tail
+const COLLAR_GEO = new THREE.TorusGeometry(0.22, 0.05, 8, 16); // Corgi collar
 const JOINT_SPHERE_GEO = new THREE.SphereGeometry(0.06);
 const SHADOW_GEO = new THREE.CircleGeometry(0.5, 32);
 
@@ -56,18 +56,18 @@ export const Player: React.FC = () => {
   const isInvincible = useRef(false);
   const lastDamageTime = useRef(0);
 
-  // Memoized Materials
+  // Memoized Materials - Earth Tones
   const { armorMaterial, jointMaterial, glowMaterial, shadowMaterial } = useMemo(() => {
-      const armorColor = isImmortalityActive ? '#ffd700' : '#00aaff';
-      const glowColor = isImmortalityActive ? '#ffffff' : '#00ffff';
-      
+      const armorColor = isImmortalityActive ? '#d4a574' : '#8b6f47'; // Tan/brown for corgi fur
+      const glowColor = isImmortalityActive ? '#f5deb3' : '#d2b48c'; // Wheat/tan glow
+
       return {
           armorMaterial: new THREE.MeshStandardMaterial({ color: armorColor, roughness: 0.3, metalness: 0.8 }),
-          jointMaterial: new THREE.MeshStandardMaterial({ color: '#111111', roughness: 0.7, metalness: 0.5 }),
+          jointMaterial: new THREE.MeshStandardMaterial({ color: '#4a3728', roughness: 0.7, metalness: 0.5 }), // Dark brown
           glowMaterial: new THREE.MeshBasicMaterial({ color: glowColor }),
           shadowMaterial: new THREE.MeshBasicMaterial({ color: '#000000', opacity: 0.3, transparent: true })
       };
-  }, [isImmortalityActive]); // Only recreate if immortality state changes (for color shift)
+  }, [isImmortalityActive]);
 
   // --- Reset State on Game Start ---
   useEffect(() => {
@@ -213,7 +213,7 @@ export const Player: React.FC = () => {
         // Tail wagging
         if (tailRef.current) tailRef.current.rotation.z = Math.sin(time * 1.5) * 0.3;
 
-        if (bodyRef.current) bodyRef.current.position.y = 0.6 + Math.abs(Math.sin(time)) * 0.08;
+        if (bodyRef.current) bodyRef.current.position.y = 0.45 + Math.abs(Math.sin(time)) * 0.06;
     } else {
         // Jumping Pose - Dog extends legs
         const jumpPoseSpeed = delta * 10;
@@ -226,7 +226,7 @@ export const Player: React.FC = () => {
         if (tailRef.current) tailRef.current.rotation.z = THREE.MathUtils.lerp(tailRef.current.rotation.z, 0, jumpPoseSpeed);
 
         // Only reset Y if not flipping
-        if (bodyRef.current && jumpsPerformed.current !== 2) bodyRef.current.position.y = 0.6;
+        if (bodyRef.current && jumpsPerformed.current !== 2) bodyRef.current.position.y = 0.45;
     }
 
     // 4. Dynamic Shadow
@@ -276,66 +276,69 @@ export const Player: React.FC = () => {
 
   return (
     <group ref={groupRef} position={[0, 0, 0]}>
-      <group ref={bodyRef} position={[0, 0.6, 0]}>
+      <group ref={bodyRef} position={[0, 0.45, 0]}>
 
-        {/* Dog Body */}
+        {/* Corgi Body */}
         <mesh castShadow position={[0, 0, 0]} geometry={BODY_GEO} material={armorMaterial} />
 
-        {/* Dog Head */}
-        <group ref={headRef} position={[0, 0.15, 0.5]}>
+        {/* Corgi Head */}
+        <group ref={headRef} position={[0, 0.1, 0.6]}>
             <mesh castShadow geometry={HEAD_GEO} material={armorMaterial} />
 
             {/* Snout */}
-            <mesh castShadow position={[0, -0.05, 0.3]} geometry={SNOUT_GEO} material={armorMaterial} />
+            <mesh castShadow position={[0, -0.05, 0.32]} geometry={SNOUT_GEO} material={armorMaterial} />
 
-            {/* Ears */}
-            <mesh castShadow position={[-0.15, 0.2, 0]} geometry={EAR_GEO} material={armorMaterial} rotation={[0, 0, -0.3]} />
-            <mesh castShadow position={[0.15, 0.2, 0]} geometry={EAR_GEO} material={armorMaterial} rotation={[0, 0, 0.3]} />
+            {/* Big Corgi Ears */}
+            <mesh castShadow position={[-0.18, 0.25, 0.05]} geometry={EAR_GEO} material={armorMaterial} rotation={[0.2, -0.1, -0.15]} />
+            <mesh castShadow position={[0.18, 0.25, 0.05]} geometry={EAR_GEO} material={armorMaterial} rotation={[0.2, 0.1, 0.15]} />
 
-            {/* Eyes (glowing) */}
-            <mesh position={[-0.1, 0.05, 0.3]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} scale={[0.6, 0.6, 0.6]} />
-            <mesh position={[0.1, 0.05, 0.3]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} scale={[0.6, 0.6, 0.6]} />
+            {/* Eyes (soft glow) */}
+            <mesh position={[-0.12, 0.05, 0.35]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} scale={[0.5, 0.5, 0.5]} />
+            <mesh position={[0.12, 0.05, 0.35]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} scale={[0.5, 0.5, 0.5]} />
+
+            {/* Nose */}
+            <mesh position={[0, -0.1, 0.45]} geometry={JOINT_SPHERE_GEO} material={jointMaterial} scale={[0.4, 0.4, 0.4]} />
         </group>
 
         {/* Collar */}
-        <mesh position={[0, 0.15, 0.35]} rotation={[Math.PI/2, 0, 0]} geometry={COLLAR_GEO} material={glowMaterial} />
+        <mesh position={[0, 0.1, 0.45]} rotation={[Math.PI/2, 0, 0]} geometry={COLLAR_GEO} material={glowMaterial} />
 
-        {/* Front Right Leg */}
-        <group position={[0.15, -0.2, 0.25]}>
+        {/* Front Right Leg - Short */}
+        <group position={[0.18, -0.17, 0.35]}>
             <group ref={frontRightLegRef}>
-                <mesh position={[0, -0.25, 0]} castShadow geometry={LEG_GEO} material={armorMaterial} />
-                <mesh position={[0, -0.5, 0]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} />
+                <mesh position={[0, -0.15, 0]} castShadow geometry={LEG_GEO} material={armorMaterial} />
+                <mesh position={[0, -0.3, 0]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} scale={[0.7, 0.7, 0.7]} />
             </group>
         </group>
 
-        {/* Front Left Leg */}
-        <group position={[-0.15, -0.2, 0.25]}>
+        {/* Front Left Leg - Short */}
+        <group position={[-0.18, -0.17, 0.35]}>
             <group ref={frontLeftLegRef}>
-                <mesh position={[0, -0.25, 0]} castShadow geometry={LEG_GEO} material={armorMaterial} />
-                <mesh position={[0, -0.5, 0]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} />
+                <mesh position={[0, -0.15, 0]} castShadow geometry={LEG_GEO} material={armorMaterial} />
+                <mesh position={[0, -0.3, 0]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} scale={[0.7, 0.7, 0.7]} />
             </group>
         </group>
 
-        {/* Back Right Leg */}
-        <group position={[0.15, -0.2, -0.25]}>
+        {/* Back Right Leg - Short */}
+        <group position={[0.18, -0.17, -0.35]}>
             <group ref={backRightLegRef}>
-                <mesh position={[0, -0.25, 0]} castShadow geometry={LEG_GEO} material={armorMaterial} />
-                <mesh position={[0, -0.5, 0]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} />
+                <mesh position={[0, -0.15, 0]} castShadow geometry={LEG_GEO} material={armorMaterial} />
+                <mesh position={[0, -0.3, 0]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} scale={[0.7, 0.7, 0.7]} />
             </group>
         </group>
 
-        {/* Back Left Leg */}
-        <group position={[-0.15, -0.2, -0.25]}>
+        {/* Back Left Leg - Short */}
+        <group position={[-0.18, -0.17, -0.35]}>
             <group ref={backLeftLegRef}>
-                <mesh position={[0, -0.25, 0]} castShadow geometry={LEG_GEO} material={armorMaterial} />
-                <mesh position={[0, -0.5, 0]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} />
+                <mesh position={[0, -0.15, 0]} castShadow geometry={LEG_GEO} material={armorMaterial} />
+                <mesh position={[0, -0.3, 0]} geometry={JOINT_SPHERE_GEO} material={glowMaterial} scale={[0.7, 0.7, 0.7]} />
             </group>
         </group>
 
-        {/* Tail */}
-        <group position={[0, 0.1, -0.5]}>
+        {/* Short Fluffy Tail */}
+        <group position={[0, 0.08, -0.6]}>
             <group ref={tailRef}>
-                <mesh position={[0, 0, -0.3]} rotation={[Math.PI/4, 0, 0]} castShadow geometry={TAIL_GEO} material={armorMaterial} />
+                <mesh position={[0, 0, -0.12]} rotation={[Math.PI/6, 0, 0]} castShadow geometry={TAIL_GEO} material={armorMaterial} />
             </group>
         </group>
       </group>
